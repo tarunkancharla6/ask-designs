@@ -1,4 +1,4 @@
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API = process.env.NEXT_PUBLIC_API_URL || "";
 
 async function request(path: string, options: RequestInit = {}) {
   const token = localStorage.getItem("ask-designs-token");
