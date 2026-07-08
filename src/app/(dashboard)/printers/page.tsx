@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { getDateRange, formatCurrency } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Printer as PrinterIcon, Plus, Edit2, Trash2, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 
 export default function PrintersPage() {
-  const { printers, transactions, expenses, addPrinter, updatePrinter, deletePrinter, timeFilter } = useStore();
+  const { printers, transactions, expenses, addPrinter, updatePrinter, deletePrinter, timeFilter, init } = useStore();
+  useEffect(() => { init(); }, [init]);
   const [showAdd, setShowAdd] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -26,17 +27,21 @@ export default function PrintersPage() {
     return d >= getInRange.start && d < getInRange.end;
   });
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name.trim()) return;
-    if (editId) {
-      updatePrinter(editId, name, model);
-    } else {
-      addPrinter(name, model);
+    try {
+      if (editId) {
+        await updatePrinter(editId, name, model);
+      } else {
+        await addPrinter(name, model);
+      }
+      setName("");
+      setModel("");
+      setShowAdd(false);
+      setEditId(null);
+    } catch (e: any) {
+      alert("Failed to save printer: " + (e.message || "Unknown error"));
     }
-    setName("");
-    setModel("");
-    setShowAdd(false);
-    setEditId(null);
   };
 
   return (

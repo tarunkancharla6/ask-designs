@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { serviceTypes } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -11,7 +11,8 @@ import { Select } from "@/components/ui/select";
 import { TrendingUp, Plus, X } from "lucide-react";
 
 export default function IncomePage() {
-  const { printers, addTransaction } = useStore();
+  const { printers, addTransaction, init } = useStore();
+  useEffect(() => { init(); }, [init]);
   const [form, setForm] = useState({
     date: new Date().toISOString().split("T")[0],
     printerId: "",

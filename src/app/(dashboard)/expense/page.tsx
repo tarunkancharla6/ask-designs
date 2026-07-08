@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { expenseTypes } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -11,7 +11,8 @@ import { Select } from "@/components/ui/select";
 import { TrendingDown, Plus } from "lucide-react";
 
 export default function ExpensePage() {
-  const { printers, addExpense } = useStore();
+  const { printers, addExpense, init } = useStore();
+  useEffect(() => { init(); }, [init]);
   const [form, setForm] = useState({
     date: new Date().toISOString().split("T")[0],
     printerId: "",
