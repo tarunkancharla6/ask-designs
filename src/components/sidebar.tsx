@@ -51,10 +51,10 @@ export default function Sidebar() {
       </AnimatePresence>
 
       <motion.aside
-        initial={{ x: -280 }}
-        animate={{ x: mobileOpen ? 0 : -280 }}
+        initial={false}
+        animate={{ x: 0 }}
         className={cn(
-          "fixed top-0 left-0 z-40 h-full w-64 bg-[#0D0D0D] border-r border-white/5 flex flex-col transition-all duration-300 lg:translate-x-0 lg:static lg:z-auto",
+          "fixed top-0 left-0 z-40 h-full w-64 bg-[#0D0D0D] border-r border-white/5 flex flex-col transition-all duration-300",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
