@@ -33,14 +33,14 @@ def on_startup():
     init_db()
     db: Session = SessionLocal()
     try:
-        user = db.query(User).first()
-        if not user:
-            user = User(
+        admin = db.query(User).filter(User.username == "admin").first()
+        if not admin:
+            admin = User(
                 username="admin",
                 password_hash=get_password_hash("admin"),
                 shop_name="ASK DESIGNS",
             )
-            db.add(user)
+            db.add(admin)
             db.flush()
 
             default_printers = [
@@ -49,8 +49,18 @@ def on_startup():
                 {"name": "EPSON", "model": "Epson"},
             ]
             for p in default_printers:
-                printer = Printer(name=p["name"], model=p["model"], user_id=user.id)
+                printer = Printer(name=p["name"], model=p["model"], user_id=admin.id)
                 db.add(printer)
+            db.commit()
+
+        ashok = db.query(User).filter(User.username == "ashok").first()
+        if not ashok:
+            ashok = User(
+                username="ashok",
+                password_hash=get_password_hash("ashok@123"),
+                shop_name="ASK DESIGNS",
+            )
+            db.add(ashok)
             db.commit()
     finally:
         db.close()
