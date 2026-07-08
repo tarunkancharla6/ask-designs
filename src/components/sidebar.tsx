@@ -55,24 +55,23 @@ export default function Sidebar() {
         initial={false}
         animate={{ width: collapsed ? 64 : 256 }}
         className={cn(
-          "fixed top-0 left-0 z-40 h-full bg-[#0D0D0D] border-r border-white/5 flex flex-col transition-all duration-300 overflow-hidden",
-          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          "hidden lg:flex h-full bg-[#0D0D0D] border-r border-white/5 flex-col overflow-hidden shrink-0",
         )}
       >
-        <div className="flex items-center justify-between p-4 border-b border-white/5 min-h-[73px]">
+        <div className="flex items-center justify-between px-4 py-5 border-b border-white/5 min-h-[80px]">
           {!collapsed && (
-            <Link href="/dashboard" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg gold-gradient border border-primary/30 flex items-center justify-center text-lg font-bold text-black shrink-0">
+            <Link href="/dashboard" className="flex items-center gap-3 mx-auto">
+              <div className="w-12 h-12 rounded-xl gold-gradient border border-primary/30 flex items-center justify-center text-xl font-bold text-black shrink-0">
                 A
               </div>
-              <div className="overflow-hidden">
-                <h1 className="text-lg font-bold gold-gradient truncate">ASK DESIGNS</h1>
-                <p className="text-[10px] text-muted-foreground truncate">Business Intelligence</p>
+              <div>
+                <h1 className="text-2xl font-bold gold-gradient tracking-wide">ASK DESIGNS</h1>
+                <p className="text-[11px] text-muted-foreground text-center">Business Intelligence</p>
               </div>
             </Link>
           )}
           {collapsed && (
-            <div className="w-10 h-10 rounded-lg gold-gradient border border-primary/30 flex items-center justify-center text-lg font-bold text-black mx-auto shrink-0">
+            <div className="w-12 h-12 rounded-xl gold-gradient border border-primary/30 flex items-center justify-center text-xl font-bold text-black mx-auto shrink-0">
               A
             </div>
           )}
@@ -128,6 +127,66 @@ export default function Sidebar() {
           </button>
         </div>
       </motion.aside>
+
+      {/* mobile sidebar */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.aside
+            initial={{ x: -256 }}
+            animate={{ x: 0 }}
+            exit={{ x: -256 }}
+            className="fixed top-0 left-0 z-50 h-full w-64 bg-[#0D0D0D] border-r border-white/5 flex flex-col overflow-hidden lg:hidden"
+          >
+            <div className="flex items-center justify-between px-4 py-5 border-b border-white/5 min-h-[80px]">
+              <Link href="/dashboard" className="flex items-center gap-3 mx-auto">
+                <div className="w-12 h-12 rounded-xl gold-gradient border border-primary/30 flex items-center justify-center text-xl font-bold text-black shrink-0">
+                  A
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold gold-gradient tracking-wide">ASK DESIGNS</h1>
+                  <p className="text-[11px] text-muted-foreground text-center">Business Intelligence</p>
+                </div>
+              </Link>
+            </div>
+            <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group",
+                      isActive
+                        ? "bg-primary/10 text-primary border border-primary/20 shadow-lg shadow-primary/5"
+                        : "text-muted-foreground hover:text-white hover:bg-white/5"
+                    )}
+                  >
+                    <item.icon size={18} className={cn(isActive ? "text-primary" : "")} />
+                    <span>{item.label}</span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeNavMobile"
+                        className="ml-auto w-1.5 h-1.5 rounded-full bg-primary"
+                      />
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+            <div className="p-3 border-t border-white/5">
+              <button
+                onClick={logout}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-red-400 hover:bg-red-500/10 w-full transition-all duration-200"
+              >
+                <LogOut size={18} />
+                <span>Logout</span>
+              </button>
+            </div>
+          </motion.aside>
+        )}
+      </AnimatePresence>
     </>
   );
 }
