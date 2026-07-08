@@ -14,8 +14,7 @@
       "source": "/api/(.*)",
       "destination": {
         "type": "service",
-        "service": "backend",
-        "path": "/api/:match"
+        "service": "backend"
       }
     },
     {
