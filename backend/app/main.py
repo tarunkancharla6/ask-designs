@@ -93,4 +93,20 @@ def on_startup():
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "app": "ASK DESIGNS API"}
+    import os
+    return {
+        "status": "ok",
+        "app": "ASK DESIGNS API",
+        "gist_id": os.environ.get("DATA_GIST_ID", "NOT_SET"),
+        "gh_token": "SET" if os.environ.get("GH_TOKEN") else "NOT_SET",
+    }
+
+
+@app.post("/api/debug/backup")
+def debug_backup():
+    from app.persistence import backup as do_backup
+    try:
+        do_backup()
+        return {"backup": "ok"}
+    except Exception as e:
+        return {"backup": "failed", "error": str(e)}
