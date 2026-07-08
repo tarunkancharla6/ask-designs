@@ -28,11 +28,14 @@ def create_printer(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    printer = Printer(name=data.name, model=data.model, user_id=current_user.id)
-    db.add(printer)
-    db.commit()
-    db.refresh(printer)
-    return printer_dict(printer)
+    try:
+        printer = Printer(name=data.name, model=data.model, user_id=current_user.id)
+        db.add(printer)
+        db.commit()
+        db.refresh(printer)
+        return printer_dict(printer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.put("/{printer_id}")
