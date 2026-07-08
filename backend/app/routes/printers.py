@@ -5,21 +5,24 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import Printer, User
-from app.schemas import PrinterCreate, PrinterUpdate, PrinterResponse
+from app.schemas import PrinterCreate, PrinterUpdate
 from app.auth import get_current_user
 
 router = APIRouter(prefix="/api/printers", tags=["Printers"])
 
+def printer_dict(p):
+    return {"id": p.id, "name": p.name, "model": p.model, "created_at": p.created_at.isoformat()}
 
-@router.get("", response_model=List[PrinterResponse])
+
+@router.get("")
 def list_printers(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return db.query(Printer).filter(Printer.user_id == current_user.id).all()
+    return [printer_dict(p) for p in db.query(Printer).filter(Printer.user_id == current_user.id).all()]
 
 
-@router.post("", response_model=PrinterResponse, status_code=201)
+@router.post("", status_code=201)
 def create_printer(
     data: PrinterCreate,
     db: Session = Depends(get_db),
@@ -29,10 +32,10 @@ def create_printer(
     db.add(printer)
     db.commit()
     db.refresh(printer)
-    return printer
+    return printer_dict(printer)
 
 
-@router.put("/{printer_id}", response_model=PrinterResponse)
+@router.put("/{printer_id}")
 def update_printer(
     printer_id: str,
     data: PrinterUpdate,
@@ -52,7 +55,7 @@ def update_printer(
         printer.model = data.model
     db.commit()
     db.refresh(printer)
-    return printer
+    return printer_dict(printer)
 
 
 @router.delete("/{printer_id}", status_code=204)
