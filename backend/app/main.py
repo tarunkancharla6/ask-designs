@@ -53,60 +53,44 @@ app.include_router(customer_router)
 @app.on_event("startup")
 def on_startup():
     init_db()
-    restored = restore()
-    if not restored:
-        db: Session = SessionLocal()
-        try:
-            admin = db.query(User).filter(User.username == "admin").first()
-            if not admin:
-                admin = User(
-                    username="admin",
-                    password_hash=get_password_hash("admin"),
-                    shop_name="ASK DESIGNS",
-                )
-                db.add(admin)
-                db.flush()
+    restore()
 
-                default_printers = [
-                    {"name": "KYOCERA", "model": "Kyocera"},
-                    {"name": "KONICA", "model": "Konica Minolta"},
-                    {"name": "EPSON", "model": "Epson"},
-                ]
-                for p in default_printers:
-                    printer = Printer(name=p["name"], model=p["model"], user_id=admin.id)
-                    db.add(printer)
-                db.commit()
+    db: Session = SessionLocal()
+    try:
+        admin = db.query(User).filter(User.username == "admin").first()
+        if not admin:
+            admin = User(
+                username="admin",
+                password_hash=get_password_hash("admin"),
+                shop_name="ASK DESIGNS",
+            )
+            db.add(admin)
+            db.flush()
 
-            ashok = db.query(User).filter(User.username == "ashok").first()
-            if not ashok:
-                ashok = User(
-                    username="ashok",
-                    password_hash=get_password_hash("ashok@123"),
-                    shop_name="ASK DESIGNS",
-                )
-                db.add(ashok)
-                db.commit()
-        finally:
-            db.close()
-        backup()
+            default_printers = [
+                {"name": "KYOCERA", "model": "Kyocera"},
+                {"name": "KONICA", "model": "Konica Minolta"},
+                {"name": "EPSON", "model": "Epson"},
+            ]
+            for p in default_printers:
+                printer = Printer(name=p["name"], model=p["model"], user_id=admin.id)
+                db.add(printer)
+            db.commit()
+
+        ashok = db.query(User).filter(User.username == "ashok").first()
+        if not ashok:
+            ashok = User(
+                username="ashok",
+                password_hash=get_password_hash("ashok@123"),
+                shop_name="ASK DESIGNS",
+            )
+            db.add(ashok)
+            db.commit()
+    finally:
+        db.close()
+    backup()
 
 
 @app.get("/api/health")
 def health():
-    import os
-    return {
-        "status": "ok",
-        "app": "ASK DESIGNS API",
-        "gist_id": os.environ.get("DATA_GIST_ID", "NOT_SET"),
-        "gh_token": "SET" if os.environ.get("GH_TOKEN") else "NOT_SET",
-    }
-
-
-@app.post("/api/debug/backup")
-def debug_backup():
-    from app.persistence import backup as do_backup
-    try:
-        do_backup()
-        return {"backup": "ok"}
-    except Exception as e:
-        return {"backup": "failed", "error": str(e)}
+    return {"status": "ok", "app": "ASK DESIGNS API"}
