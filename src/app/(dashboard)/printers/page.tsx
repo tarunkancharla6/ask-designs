@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { getDateRange, formatCurrency } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Printer as PrinterIcon, Plus, Edit2, Trash2, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 
 export default function PrintersPage() {
-  const { printers, transactions, expenses, addPrinter, updatePrinter, deletePrinter, timeFilter, init } = useStore();
-  useEffect(() => { init(); }, [init]);
+  const { printers, transactions, expenses, addPrinter, updatePrinter, deletePrinter, timeFilter } = useStore();
   const [showAdd, setShowAdd] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [name, setName] = useState("");
