@@ -1,7 +1,5 @@
-import time
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
 from sqlalchemy.orm import Session
 
 from app.database import init_db, SessionLocal
@@ -12,28 +10,9 @@ from app.routes.printers import router as printer_router
 from app.routes.transactions import router as transaction_router
 from app.routes.expenses import router as expense_router
 from app.routes.customers import router as customer_router
-from app.persistence import restore, backup, export_db
 
 app = FastAPI(title="ASK DESIGNS API", version="1.0.0")
 
-
-class BackupMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request, call_next):
-        response = await call_next(request)
-        if (
-            request.method in ("POST", "PUT", "DELETE")
-            and response.status_code < 400
-            and request.url.path.startswith("/api/")
-            and "/auth/" not in request.url.path
-        ):
-            try:
-                backup()
-            except Exception:
-                pass
-        return response
-
-
-app.add_middleware(BackupMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
@@ -53,7 +32,6 @@ app.include_router(customer_router)
 @app.on_event("startup")
 def on_startup():
     init_db()
-    restore()
 
     db: Session = SessionLocal()
     try:
@@ -88,7 +66,6 @@ def on_startup():
             db.commit()
     finally:
         db.close()
-    backup()
 
 
 @app.get("/api/health")
