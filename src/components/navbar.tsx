@@ -30,18 +30,16 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="h-16 border-b border-white/5 bg-[#0D0D0D]/80 backdrop-blur-xl flex items-center justify-between px-4 lg:px-6 shrink-0">
-      <div className="flex items-center gap-4">
-        <div>
-          <h2 className="text-lg font-semibold text-white">{user?.shopName || "ASK DESIGNS"}</h2>
-          <p className="text-xs text-muted-foreground">
-            {time.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-            <span className="ml-2 text-primary">{time.toLocaleTimeString("en-IN")}</span>
-          </p>
-        </div>
+    <header className="h-16 border-b border-white/5 bg-[#0D0D0D]/80 backdrop-blur-xl flex items-center justify-center px-4 lg:px-6 shrink-0 relative">
+      <div className="text-center">
+        <h2 className="text-xl lg:text-2xl font-bold gold-gradient tracking-wide">{user?.shopName || "ASK DESIGNS"}</h2>
+        <p className="text-xs lg:text-sm text-muted-foreground">
+          {time.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          <span className="ml-2 text-primary font-medium">{time.toLocaleTimeString("en-IN")}</span>
+        </p>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="absolute right-4 lg:right-6 top-1/2 -translate-y-1/2 flex items-center gap-3">
         <div className="relative">
           <button
             onClick={() => setShowFilters(!showFilters)}

@@ -51,6 +51,16 @@ export default function Sidebar() {
         )}
       </AnimatePresence>
 
+      {/* floating expand button when collapsed */}
+      {collapsed && (
+        <button
+          onClick={() => setCollapsed(false)}
+          className="hidden lg:flex fixed left-[60px] top-4 z-30 w-8 h-8 rounded-r-lg bg-card border border-l-0 border-white/10 text-muted-foreground hover:text-white items-center justify-center shadow-lg"
+        >
+          <PanelLeft size={16} />
+        </button>
+      )}
+
       <motion.aside
         initial={false}
         animate={{ width: collapsed ? 64 : 256 }}
@@ -58,7 +68,7 @@ export default function Sidebar() {
           "hidden lg:flex h-full bg-[#0D0D0D] border-r border-white/5 flex-col overflow-hidden shrink-0",
         )}
       >
-        <div className="flex items-center justify-between px-4 py-5 border-b border-white/5 min-h-[80px]">
+        <div className="flex items-center px-4 py-5 border-b border-white/5 min-h-[80px]">
           {!collapsed && (
             <Link href="/dashboard" className="flex items-center gap-3 mx-auto">
               <div className="w-12 h-12 rounded-xl gold-gradient border border-primary/30 flex items-center justify-center text-xl font-bold text-black shrink-0">
@@ -137,7 +147,7 @@ export default function Sidebar() {
             exit={{ x: -256 }}
             className="fixed top-0 left-0 z-50 h-full w-64 bg-[#0D0D0D] border-r border-white/5 flex flex-col overflow-hidden lg:hidden"
           >
-            <div className="flex items-center justify-between px-4 py-5 border-b border-white/5 min-h-[80px]">
+            <div className="flex items-center px-4 py-5 border-b border-white/5 min-h-[80px]">
               <Link href="/dashboard" className="flex items-center gap-3 mx-auto">
                 <div className="w-12 h-12 rounded-xl gold-gradient border border-primary/30 flex items-center justify-center text-xl font-bold text-black shrink-0">
                   A
